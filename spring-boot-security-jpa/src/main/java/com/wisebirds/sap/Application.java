@@ -10,7 +10,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wisebirds.sap.domain.ad.AdCampaignGroup;
 
-@SpringBootApplication
+@SpringBootApplication //은 아래의 설정과 동일함
+//@Configuration
+//@EnableAutoConfiguration
+//@ComponentScan
 public class Application extends SpringBootServletInitializer {
 	public static Gson GSON = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 
