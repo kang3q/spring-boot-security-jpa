@@ -40,6 +40,8 @@ package com.wisebirds.sap.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.boot.context.embedded.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
@@ -49,13 +51,26 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 import com.wisebirds.sap.service.authentication.AuthenticationService;
+import com.wisebirds.sap.util.JwtFilter;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 class SecurityConfig extends WebSecurityConfigurerAdapter {
+	
 	@Autowired
 	private AuthenticationService authenticationService;
+	
+	@Bean
+	public FilterRegistrationBean jwtFilter() {
+		final FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+		registrationBean.setFilter(new JwtFilter());
+		registrationBean.addUrlPatterns("/v1.0/*");
+		registrationBean.addUrlPatterns("/v1.1/*");
+		return registrationBean;
+		//토큰 생성 방법
+		//String token = Jwts.builder().setSubject(form.getMemberId()).claim("roles", form.getRole()).signWith(SignatureAlgorithm.HS512, "secretkey").compact();
+	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -67,7 +82,7 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {
 				//
 				.antMatchers("/").permitAll() //
 				.antMatchers("/v1.*/**").permitAll() //
-				// .antMatchers("/v1.*/**").hasAuthority("USER") //ADMIN
+				.antMatchers("/admin/**").hasAuthority("ADMIN") //
 				.anyRequest().fullyAuthenticated() //
 				.and() //
 				//
