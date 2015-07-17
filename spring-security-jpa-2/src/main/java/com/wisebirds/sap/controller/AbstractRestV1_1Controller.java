@@ -1,7 +1,0 @@
-package com.wisebirds.sap.controller;
-
-import org.springframework.web.bind.annotation.RequestMapping;
-
-@RequestMapping("/v1.1")
-public abstract class AbstractRestV1_1Controller {
-}
